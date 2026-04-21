@@ -58,6 +58,25 @@ To build and deploy directly to production:
 npm run deploy
 ```
 
+**Security Note:**
+This application queries sensitive HTTP and Firewall event logs using Cloudflare's Log Explorer SQL API. It does not enforce authentication in the code. **You must deploy this worker behind Cloudflare Access / Zero Trust** so that only authorized administrators can view the reports.
+
+## Two-Step Query Flow
+
+To ensure accurate footprint metrics, the report queries logs in two steps:
+
+1. Searches `http_requests` for the specific `student-id` header to collect their unique `RayID`s.
+2. Uses those `RayID`s to query `firewall_events`, fetching full rules/actions that triggered for this exact student (fixing a previous over-counting bug where it only filtered firewall events by time).
+
+## Rich Data Fields
+
+The report pulls various dimensions from Log Explorer:
+
+- **Geo & Network**: `ClientCountry`, `ClientASN`, `ClientIP`
+- **Device & Bot**: `ClientDeviceType`, `ClientRequestUserAgent`, `BotScore`, `VerifiedBotCategory`
+- **Hosts & Referrers**: `ClientRequestHost`, `ClientRequestReferer`, `CacheCacheStatus`
+- **Security & Rules**: WAF Attack scores (SQLi, XSS, RCE), triggered rule descriptions, actions, and sources.
+
 To deploy a preview URL:
 
 ```sh

@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "user-report-workers",
+  "compatibility_date": "2026-04-20",
+  "main": "./workers/app.ts",
+  "vars": {
+    "STUDENT_ID_HEADER": "student-id",
+    "HTTP_TIME_COL": "EdgeStartTimestamp",
+    "FW_TIME_COL": "Datetime",
+    "MAX_ROWS": "10000",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "upload_source_maps": true,
+  "compatibility_flags": ["nodejs_compat"],
+  "route": {
+    "custom_domain": true,
+    "pattern": "my-domain.com", // your own domain
+  },
+}
+
+// add secret
+// CF_ZONE_ID=11111111111111111111111111111111 <--- your zone tag from account dashboard
+// CF_API_TOKEN=22222222222222222222222222222222 <--- your api token from account dashboard
